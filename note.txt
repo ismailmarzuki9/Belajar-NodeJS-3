@@ -1,0 +1,21 @@
+1. cara akses di jaringan yang sama 
+    buka cmd ketik ipconfig 
+    pada bagaian : Wireless LAN adapter Wi-Fi:
+    cari IPv4 Address. . . . . . . . . . . : 10.250.9.228
+    pada komputer lain dan HP di jaringan yang sama bukak http://10.250.9.228:port
+    maka letop kamu akan berhasil di akses oleh komputer lain dan Hp
+
+2. Vite
+Vite adalah build tool dan dev server untuk frontend modern. Ia melayani file Anda di port 5173 dengan hot reload (tampilan langsung berubah saat file disimpan).
+    installasi :
+    
+
+Vite punya template untuk memulai proyek (vanilla JS, React, Vue, dan lainnya). Kita mulai dengan vanilla JavaScript dulu agar Anda memahami cara frontend bicara ke backend tanpa framework. Framework bisa menyusul.
+Frontend berkomunikasi lewat fetch() yang mengembalikan Promise. Persiapkan dengan mencari tahu: apa itu async/await, dan kenapa fetch butuh await dua kali (satu untuk response, satu untuk .json())?
+
+Access-Control-Allow-Origin: http://localhost:5173
+
+proxy.server
+server.proxy adalah opsi konfigurasi (bukan plugin) pada dev server Vite. Tugasnya meneruskan request yang path-nya cocok dengan pola tertentu ke server lain. Ia tidak “membelokkan origin”: browser tetap hanya bicara ke localhost:5173 (satu origin), sedangkan yang menghubungi backend adalah Vite, bukan browser. Karena itu tidak ada lintas origin dan CORS tidak berlaku
+changeOrigin: true mengubah header Host pada request yang diteruskan menjadi host target. Komentar di kode Anda (“mengubah header ‘origin’”) kurang tepat, yang berubah adalah Host.
+letakan file vite.config.js sejajar dengan package.json
