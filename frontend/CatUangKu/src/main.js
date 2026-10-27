@@ -34,9 +34,12 @@ const getData = async ()=>{
 getData();
 
 const tambahCatatan = async (dataInput)=>{
-    event.preventDefault()
     console.log("data yang di terima, ", dataInput);
-
+    const from = document.getElementById('fromCatatan');
+    from.addEventListener("submit", function (even){
+        even.preventDefault();
+    })
+    
     try{
         if(!dataInput){
             alert(" Data inputan kosong : ?");
