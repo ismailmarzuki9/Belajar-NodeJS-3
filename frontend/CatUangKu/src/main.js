@@ -33,12 +33,16 @@ const getData = async ()=>{
 
 getData();
 
+
+const from = document.getElementById('fromCatatan');
+from.addEventListener("submit", function (even){
+    even.preventDefault();
+    // ambil value dari input
+
+    tambahCatatan(dataInput);
+})
 const tambahCatatan = async (dataInput)=>{
     console.log("data yang di terima, ", dataInput);
-    const from = document.getElementById('fromCatatan');
-    from.addEventListener("submit", function (even){
-        even.preventDefault();
-    })
     
     try{
         if(!dataInput){
