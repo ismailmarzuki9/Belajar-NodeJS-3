@@ -67,7 +67,7 @@ app.post('/api/notes/', (req, res)=>{
            message : "Data gagal input"
        })
    }
-   const randID = Math.floor(Math.random() * 10);
+   const randID = Math.floor(Math.random() * 10); // ini sementara saja, selanjutnya ini akan di buat di db atau menggunkan UUID
 
     const dataPost = {
         id : Number(randID),

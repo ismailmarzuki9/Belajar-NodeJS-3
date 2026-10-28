@@ -20,11 +20,10 @@ const getData = async ()=>{
         const idDaftar = document.querySelector('#daftar');
         idDaftar.replaceChildren(); 
         const ulBaru = document.createElement("ul");
-        const ArrData = data
-       
-        for (let i = 0; i < ArrData.length; i++) {
-        var liBaru1 = document.createElement("li");
-            liBaru1.textContent=ArrData[i].title;
+        
+        for (let i = 0; i < data.length; i++) {
+        const liBaru1 = document.createElement("li");
+            liBaru1.textContent=data[i].title;
             ulBaru.appendChild(liBaru1);
         }
 
@@ -34,21 +33,31 @@ const getData = async ()=>{
 getData();
 
 
-const from = document.getElementById('fromCatatan');
-from.addEventListener("submit", function (even){
-    even.preventDefault();
+const from = document.getElementById('formCatatan');
+from.addEventListener("submit", function (event){
+    // event.preventDefault();
     // ambil value dari input
-
+    const getTitle = document.querySelector("#fJudul");
+    const dataInput = getTitle.value
     tambahCatatan(dataInput);
 })
 const tambahCatatan = async (dataInput)=>{
     console.log("data yang di terima, ", dataInput);
     
     try{
-        if(!dataInput){
-            alert(" Data inputan kosong : ?");
+        // if(dataInput===""){
+        //     return(
+        //         alert(" Data inputan kosong : ?");
+        //     )
+        // }
+        const randID = Math.floor(Math.random() * 10);
+        
+        const dataBody= {
+            id : Number(randID),
+            title : dataInput,
         }
-        const data = JSON.stringify(dataFrom)
+        const data = JSON.stringify(dataBody);
+        
         const response = await fetch('/api/notes/',{
             method: 'POST',
             headers :{
@@ -61,6 +70,7 @@ const tambahCatatan = async (dataInput)=>{
         }
         getData();
     }catch(error){
-        console.log(`Proses Error dengan detail : ${error.message}`)
+        // console.log(`Proses Error dengan detail : ${error.message}`)
+        idPesan.textContent = error.message
     }
 }
