@@ -1,5 +1,6 @@
 
 const idPesan = document.querySelector('#pesan');
+const idInput = document.querySelector('#fJudul')
 
 const getData = async ()=>{
     try{
@@ -9,7 +10,8 @@ const getData = async ()=>{
         }
         const data = await response.json();
         tampilkanCatatan(data.data);
-        idPesan.textContent = ''
+        idPesan.textContent = '';
+        
     }catch(error){
         // console.log("Pesan Error: ",error.message);
         idPesan.textContent = error.message    
@@ -27,33 +29,29 @@ const getData = async ()=>{
             ulBaru.appendChild(liBaru1);
         }
 
-        idDaftar.appendChild(ulBaru);   
+        idDaftar.appendChild(ulBaru);  
     }
 
 getData();
 
 
-const from = document.getElementById('formCatatan');
-from.addEventListener("submit", function (event){
-    // event.preventDefault();
+const idFrom = document.getElementById('formCatatan');
+idFrom.addEventListener("submit", function (event){
+    event.preventDefault();
     // ambil value dari input
     const getTitle = document.querySelector("#fJudul");
     const dataInput = getTitle.value
     tambahCatatan(dataInput);
 })
 const tambahCatatan = async (dataInput)=>{
-    console.log("data yang di terima, ", dataInput);
-    
     try{
         // if(dataInput===""){
         //     return(
         //         alert(" Data inputan kosong : ?");
         //     )
         // }
-        const randID = Math.floor(Math.random() * 10);
         
         const dataBody= {
-            id : Number(randID),
             title : dataInput,
         }
         const data = JSON.stringify(dataBody);
@@ -66,9 +64,12 @@ const tambahCatatan = async (dataInput)=>{
             body : data
         })
         if(!response.ok){
-            throw new Error ( `Gagal Input dengan code ${response.status} dengan pesan ${response.message}`);
+            const errorBody = await response.json()
+            console.log(errorBody);
+            throw new Error ( `Gagal Input dengan code ${response.status} dengan pesan ${errorBody.message}`);
         }
-        getData();
+        await getData();
+        idInput.value ='';
     }catch(error){
         // console.log(`Proses Error dengan detail : ${error.message}`)
         idPesan.textContent = error.message
