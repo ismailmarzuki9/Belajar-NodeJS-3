@@ -20,12 +20,25 @@ const getData = async ()=>{
 
     const tampilkanCatatan =(data)=>{
         const idDaftar = document.querySelector('#daftar');
-        idDaftar.replaceChildren(); 
+        // idDaftar.replaceChildren(); 
         const ulBaru = document.createElement("ul");
+
+        
         
         for (let i = 0; i < data.length; i++) {
         const liBaru1 = document.createElement("li");
             liBaru1.textContent=data[i].title;
+
+            const buttonDelete = document.createElement("button");
+            const dataSet = document.createAttribute("data-id");
+            const classDel = document.createAttribute("class");
+            buttonDelete.textContent="Delete";
+            dataSet.value=data[i].id;
+            classDel.value="delete";
+            buttonDelete.setAttributeNode(classDel);
+            buttonDelete.setAttributeNode(dataSet);
+
+            liBaru1.appendChild(buttonDelete);
             ulBaru.appendChild(liBaru1);
         }
 
@@ -43,6 +56,7 @@ idFrom.addEventListener("submit", function (event){
     const dataInput = getTitle.value
     tambahCatatan(dataInput);
 })
+
 const tambahCatatan = async (dataInput)=>{
     try{
         // if(dataInput===""){
@@ -75,3 +89,18 @@ const tambahCatatan = async (dataInput)=>{
         idPesan.textContent = error.message
     }
 }
+
+// const GetDelete = document.querySelectorAll(".delete");
+
+    idFrom.addEventListener("click", function(event){
+
+        if (event.target.tagName=== "button") {
+            console.log("BUTTON:", event.target);
+            console.log("DATASET:", event.target.dataset);
+            
+            const idButton = event.target.dataset.id;
+            console.log("id Button :", idButton);
+            
+        }
+    
+    })
