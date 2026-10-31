@@ -1,3 +1,4 @@
 # Mengabaikan folder node_modules di backend dan frontend
 backend/node_modules/
+backend/node_modules/db/catuangku.db
 frontend/CatUangKu/node_modules

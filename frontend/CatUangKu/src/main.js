@@ -51,13 +51,14 @@ const tampilkanCatatan =(data)=>{
             // const dataSet = document.createAttribute("data-id");
             const buttonEdit = document.createElement("button");
             buttonDelete.textContent="delete";
-            buttonEdit.textContent=" edit ";
+            buttonEdit.textContent="edit";
             // dataSet.value=data[i].id;
             // buttonDelete.setAttributeNode(dataSet);
             buttonDelete.dataset.id = data[i].id
             buttonDelete.dataset.aksi = "delete"
             buttonEdit.dataset.id = data[i].id
-            buttonEdit.dataset.aksi = " edit "
+            buttonEdit.dataset.aksi = "edit"
+            buttonEdit.dataset.title = data[i].title
             
             liBaru1.appendChild(buttonDelete);
             liBaru1.appendChild(buttonEdit);
@@ -116,10 +117,11 @@ const tambahCatatan = async (dataInput)=>{
 idDaftar.addEventListener("click", function(event){
     const id = event.target.dataset.id;
         if (event.target.dataset.aksi === "delete") {
-            console.log("id Button :", id);
+            console.log("id Button delete:", id);
             hapusCatatan(id);
-        }else{
-            editCatatan(id);
+        }else if (event.target.dataset.aksi === "edit"){
+            console.log("id Button edir:", id);
+            editCatatan(id, event.target.dataset.title);
         }
 })
 
@@ -138,13 +140,43 @@ const hapusCatatan= async (id) => {
         idPesan.textContent = error.message
     }
 }
-const editCatatan = async (id) => {
+
+const editCatatan = async (id, judulLama) => {
     try {
-        console.log(id>0);
-        const data = await fetch(`/api/notes/${id}`);
-        console.log(data.data);
+        const inputValue = prompt("Judul Baru : ", judulLama);
+        // cek judul bernilai null
+        if (inputValue===null){return}
+        // menghilangkan karakter space pada value inputValue
+        const judulBaru =inputValue.trim();
+        // cek apakah value kosong
+        if(judulBaru === ""){
+            idPesan.textContent = "judul tidak boleh Kosong";
+            return;
+        }
+        // cek judul apakah sama dengan judul lama
+        // const judulLama = event.target
+        // const judulLamaValue = judulLama.dataset.title;
+        if(judulBaru === judulLama){
+            idPesan.textContent = 'ini masih Judul Lama'
+            return;
+        }
         
+        console.log('data', inputValue);
+        const putData = await fetch(`/api/notes/${id}`,{
+            method : 'PUT',
+            headers : {
+                'Content-Type': 'application/json'
+            },
+            body : JSON.stringify({
+                title : judulBaru
+            })
+        })
+        if (!putData.ok) {
+            throw new Error ( `Gagal update dengan status ${putData.status}`)
+        }
+        idPesan.textContent="";
+        await getData();
     } catch (error) {
-        
+        idPesan.textContent = error.message
     }
 }
