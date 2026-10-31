@@ -1,6 +1,7 @@
 
 const idPesan = document.querySelector('#pesan');
-const idInput = document.querySelector('#fJudul')
+const idInput = document.querySelector('#fJudul');
+const idDaftar = document.querySelector('#daftar');
 
 const getData = async ()=>{
     try{
@@ -18,33 +19,53 @@ const getData = async ()=>{
     }
 }
 
-    const tampilkanCatatan =(data)=>{
-        const idDaftar = document.querySelector('#daftar');
-        // idDaftar.replaceChildren(); 
+// const tampilkanCatatan =(data)=>{        
+//         idDaftar.replaceChildren(); // 
+//         const ulBaru = document.createElement("ul");
+
+//         for (let i = 0; i < data.length; i++) {
+//         const liBaru1 = document.createElement("li");
+//             liBaru1.textContent=data[i].title;
+
+//             const buttonDelete = document.createElement("button");
+//             const dataSet = document.createAttribute("data-id");
+//             buttonDelete.textContent="Delete";
+//             dataSet.value=data[i].id;
+//             buttonDelete.setAttributeNode(dataSet);
+
+//             liBaru1.appendChild(buttonDelete);
+//             ulBaru.appendChild(liBaru1);
+//         }
+
+//         idDaftar.appendChild(ulBaru);  
+//     }
+const tampilkanCatatan =(data)=>{        
+        idDaftar.replaceChildren(); // 
         const ulBaru = document.createElement("ul");
 
-        
-        
         for (let i = 0; i < data.length; i++) {
         const liBaru1 = document.createElement("li");
             liBaru1.textContent=data[i].title;
 
             const buttonDelete = document.createElement("button");
-            const dataSet = document.createAttribute("data-id");
-            const classDel = document.createAttribute("class");
-            buttonDelete.textContent="Delete";
-            dataSet.value=data[i].id;
-            classDel.value="delete";
-            buttonDelete.setAttributeNode(classDel);
-            buttonDelete.setAttributeNode(dataSet);
-
+            // const dataSet = document.createAttribute("data-id");
+            const buttonEdit = document.createElement("button");
+            buttonDelete.textContent="delete";
+            buttonEdit.textContent=" edit ";
+            // dataSet.value=data[i].id;
+            // buttonDelete.setAttributeNode(dataSet);
+            buttonDelete.dataset.id = data[i].id
+            buttonDelete.dataset.aksi = "delete"
+            buttonEdit.dataset.id = data[i].id
+            buttonEdit.dataset.aksi = " edit "
+            
             liBaru1.appendChild(buttonDelete);
+            liBaru1.appendChild(buttonEdit);
             ulBaru.appendChild(liBaru1);
         }
 
         idDaftar.appendChild(ulBaru);  
     }
-
 getData();
 
 
@@ -90,17 +111,40 @@ const tambahCatatan = async (dataInput)=>{
     }
 }
 
-// const GetDelete = document.querySelectorAll(".delete");
 
-    idFrom.addEventListener("click", function(event){
 
-        if (event.target.tagName=== "button") {
-            console.log("BUTTON:", event.target);
-            console.log("DATASET:", event.target.dataset);
-            
-            const idButton = event.target.dataset.id;
-            console.log("id Button :", idButton);
-            
+idDaftar.addEventListener("click", function(event){
+    const id = event.target.dataset.id;
+        if (event.target.dataset.aksi === "delete") {
+            console.log("id Button :", id);
+            hapusCatatan(id);
+        }else{
+            editCatatan(id);
         }
-    
-    })
+})
+
+const hapusCatatan= async (id) => {
+    try{
+        const response = await fetch(`/api/notes/${id}`,{
+            method : 'DELETE',
+        })
+        if(!response.ok){
+            throw new Error ( `Gagal menghapus dengan code ${response.status}`);
+        }
+
+        await getData();
+        
+    }catch(error){
+        idPesan.textContent = error.message
+    }
+}
+const editCatatan = async (id) => {
+    try {
+        console.log(id>0);
+        const data = await fetch(`/api/notes/${id}`);
+        console.log(data.data);
+        
+    } catch (error) {
+        
+    }
+}
