@@ -139,14 +139,34 @@ db.exec(`
 
 // SELECT USERS
 const selectUser = db.prepare('SELECT * FROM users');
-
-console.log('Data users:', selectUser.all());
+// console.log('Data users:', selectUser.all());
 
 // SELECT TRANSAKSI
 const selectTrx = db.prepare('SELECT * FROM transaksi');
-
 // console.log('Data transaksi:', selectTrx.all());
 
-db.close();
+const statementTrx_Post = db.prepare(`
+                                INSERT INTO transaksi (
+                                    uuid,
+                                    user_uuid,
+                                    nama_transaksi,
+                                    type,
+                                    nominal,
+                                    keterangan
+                                )
+                                VALUES
+                                    (
+                                    @uuid,
+                                    @user_uuid,
+                                    @nama_transaksi,
+                                    @type,
+                                    @nominal,
+                                    @keterangan
+                                    )
+                            `);
 
-export default db; // Kalau ingin mengekspor object database, cukup
+db.prepare('SELECT 1 AS tes').get();
+// db.close();
+
+// export default{ db, selectTrx }; // Kalau ingin mengekspor object database,
+export { db, selectTrx, statementTrx_Post,};

@@ -39,6 +39,7 @@ const getData = async ()=>{
 
 //         idDaftar.appendChild(ulBaru);  
 //     }
+
 const tampilkanCatatan =(data)=>{        
         idDaftar.replaceChildren(); // 
         const ulBaru = document.createElement("ul");
@@ -180,3 +181,4 @@ const editCatatan = async (id, judulLama) => {
         idPesan.textContent = error.message
     }
 }
+

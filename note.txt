@@ -34,3 +34,16 @@ console.log(data);
 
 
 Cari tahu crypto.randomUUID(): jalankan sendiri di Node (node -e "console.log(crypto.randomUUID())") dan kirim hasilnya.
+console.log(crypto.randomUUID())
+
+cara export dan inport di ES6Module
+1. cara tanpa default .
+    export { db, selectTrx };
+    import { db, selectTrx } from '../db/db.js';
+    bisa langsung di gunakan : selectTrx.get()
+2. caradengan default
+    export default { db, selectTrx };
+    import database from '../db/db.js';
+    cara menggunakan :
+        database.db;
+        database.selectTrx.all();
