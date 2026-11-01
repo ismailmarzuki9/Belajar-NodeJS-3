@@ -19,3 +19,18 @@ proxy.server
 server.proxy adalah opsi konfigurasi (bukan plugin) pada dev server Vite. Tugasnya meneruskan request yang path-nya cocok dengan pola tertentu ke server lain. Ia tidak “membelokkan origin”: browser tetap hanya bicara ke localhost:5173 (satu origin), sedangkan yang menghubungi backend adalah Vite, bukan browser. Karena itu tidak ada lintas origin dan CORS tidak berlaku
 changeOrigin: true mengubah header Host pada request yang diteruskan menjadi host target. Komentar di kode Anda (“mengubah header ‘origin’”) kurang tepat, yang berubah adalah Host.
 letakan file vite.config.js sejajar dengan package.json
+
+Method	Fungsi
+db.exec()	Mengeksekusi SQL secara langsung
+db.prepare()	Membuat Statement dari SQL
+statement.run()	Menjalankan INSERT, UPDATE, DELETE
+statement.get()	Mengambil satu baris
+statement.all()	Mengambil semua baris
+
+import db from './db.js';
+const statement = db.prepare("SELECT * FROM users");
+const data = statement.all();
+console.log(data);
+
+
+Cari tahu crypto.randomUUID(): jalankan sendiri di Node (node -e "console.log(crypto.randomUUID())") dan kirim hasilnya.
