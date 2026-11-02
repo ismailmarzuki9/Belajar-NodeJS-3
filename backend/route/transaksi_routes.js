@@ -35,23 +35,14 @@ route.post('/api/transaksi/',(req, res)=>{
             nominal : req.body?.nominal ?? '',
             keterangan : req.body?.keterangan  ?? '',
         }
-        console.log(Datapost);
+        console.log('data yg di post',Datapost);
         // const data = Object.values(Datapost)
         // console.log("Hasil pengambilan value object : ",data);
         
         // const PostData = statementTrx_Post.run(Datapost);
-        const PostData = statementTrx_Post.run(
-                                                {
-                                                uuid: '8f41d6e2-6f01-42f9-82ea-4a79129ba8ac',
-                                                user_uuid: '550e8400-e29b-41d4-a716-446655440004',
-                                                nama_transaksi: 'Belanja Makanan',
-                                                type: 'debit',
-                                                nominal: 150000,
-                                                keterangan: 'Belanja kebutuhan rumah'
-                                                }
-                                             );
+        const PostData = statementTrx_Post.run(Datapost);
 
-        console.log(PostData);
+        console.log('AA',PostData);
         
     } catch (error) {
         

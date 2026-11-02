@@ -1,8 +1,9 @@
-import Database from 'better-sqlite3';
-const db = new Database('catuangku.db');
+import { DatabaseSync } from "node:sqlite";
+const db = new DatabaseSync('catuangku.db');
 
 // console.log('data berhasil di buka',db);
-db.pragma('foreign_keys = ON'); // untuk mengaktifkan pemeriksaan foreign_keys
+// db.pragma('foreign_keys = ON'); // untuk mengaktifkan pemeriksaan foreign_keys
+db.exec('PRAGMA foreign_keys= ON '); // untuk mengaktifkan pemeriksaan foreign_keys
 
 // create table
 db.exec(`
