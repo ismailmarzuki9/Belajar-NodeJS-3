@@ -13,6 +13,7 @@ const Izin_con = {
 app.use(cors(Izin_con));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/',route_api_notes);
 app.use('/',transaksi_routes);

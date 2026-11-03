@@ -29,7 +29,7 @@ route.post('/api/transaksi/',(req, res)=>{
         const uuid = crypto.randomUUID();
         const Datapost = {
             uuid : uuid,
-            user_uuid :'550e8400-e29b-41d4-a716-446655440004',
+            user_uuid :      req.body?.user_uuid,
             nama_transaksi : req.body?.nama_transaksi ?? '',
             type : req.body?.type ?? '',
             nominal : req.body?.nominal ?? '',
@@ -42,10 +42,24 @@ route.post('/api/transaksi/',(req, res)=>{
         // const PostData = statementTrx_Post.run(Datapost);
         const PostData = statementTrx_Post.run(Datapost);
 
-        console.log('AA',PostData);
+        console.log('hasil data Post :',PostData);
+
+        res.status(200).json({
+            status : "success",
+            code : 200,
+            data : Datapost,
+            changes : PostData.changes
+        });
         
     } catch (error) {
-        
+        // idPesan.textContent =
+        console.error('ERROR INSERT:', error);
+
+        return res.status(500).json({
+            success: false,
+            message: 'Gagal menyimpan transaksi',
+            error: error.message
+        });
     }
 })
 
