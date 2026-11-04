@@ -144,6 +144,7 @@ const selectUser = db.prepare('SELECT * FROM users');
 
 // SELECT TRANSAKSI
 const selectTrx = db.prepare('SELECT * FROM transaksi');
+const selectTrx_uuid = db.prepare(`SELECT * FROM transaksi WHERE uuid=uuid`);
 // console.log('Data transaksi:', selectTrx.all());
 
 const statementTrx_Post = db.prepare(`
@@ -153,7 +154,8 @@ const statementTrx_Post = db.prepare(`
                                     nama_transaksi,
                                     type,
                                     nominal,
-                                    keterangan
+                                    keterangan,
+                                    updated_at
                                 )
                                 VALUES
                                     (
@@ -162,7 +164,8 @@ const statementTrx_Post = db.prepare(`
                                     @nama_transaksi,
                                     @type,
                                     @nominal,
-                                    @keterangan
+                                    @keterangan,
+                                    @updated_at
                                     )
                             `);
 
@@ -170,4 +173,5 @@ db.prepare('SELECT 1 AS tes').get();
 // db.close();
 
 // export default{ db, selectTrx }; // Kalau ingin mengekspor object database,
-export { db, selectTrx, statementTrx_Post,};
+// export { db, selectTrx, statementTrx_Post, selectTrx_uuid}; // cara ini tanpa default karena import satu satu ex :import { db, selectTrx, statementTrx_Post, selectTrx_uuid } from '../db/db.js';
+export default{ db, selectTrx, statementTrx_Post, selectTrx_uuid};
