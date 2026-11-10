@@ -16,10 +16,10 @@ const getTransaksi = async () => {
         // idPesan.textContent=Data.data;
 
         if (!response.ok) {
-            throw new Error (``);
+            throw new Error (`Data Kosong ${response.message}`);
         }
     } catch (error) {
-        
+        idPesan.textContent = error.message
     }
 
 }

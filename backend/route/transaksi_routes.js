@@ -23,7 +23,7 @@ route.get('/api/transaksi/', (req,res)=>{
         res.status(500).json({
             status : "Internal server error",
             code : 500,
-            message : "Data tidak di temukan"
+            message : "Data tidak di temukan A"
         })
     }
     
@@ -32,9 +32,19 @@ route.get('/api/transaksi/', (req,res)=>{
 // ============================================ Get_UUID
 route.get('/api/transaksi/:uuid', (req,res)=>{
     try {
-        const getData = database.selectTrx_uuid.get(uuid);
-        // console.log(getData);
+        // 1. ambil uuid dari url pakai params
+        const Get_uuid = req.params.uuid;
+        // console.log(Get_uuid);
+        const getData = database.selectTrx_uuid.get(Get_uuid);
+        // console.log('get transaksi berdasarkan uuid',getData);
         // const data = JSON.stringify(getData);
+        if (!getData) {
+                return res.status(404).json({
+                status : "Not Found",
+                code : 404,
+                message : "Data tidak ada"
+            })
+        }
         res.status(200).json({
             status : "success",
             code : 200,
@@ -45,108 +55,128 @@ route.get('/api/transaksi/:uuid', (req,res)=>{
         res.status(500).json({
             status : "Internal server error",
             code : 500,
-            message : "Data tidak di temukan"
+            message : message.error
         })
     }
     
 });
 
+// ===========S_Validasi data Post dan Put
+    const validasiDataTrx = (body) =>{
+        var nama_transaksi = body?.nama_transaksi;
+
+        if (typeof nama_transaksi !== "string" || nama_transaksi.trim() === "") {
+            return { error : " nama_transaksi wajib berupa teks tidak kosong"}
+        }
+
+        const type = body?.type.trim();
+        if (type !== 'debit' && type !== 'kredit') {
+            return { error : " type harus 'debit' atau 'kredit' "}
+        }
+
+        const nominal = body?.nominal; 
+        // console.log(Number.isInteger(nominal)); // memeriksa apakah suatu nilai merupakan bilangan bulat (integer)
+        if(!Number.isInteger(nominal) || nominal <= 10){
+            return {error : "nominal harus bilangan bulat lebih dari 10"}
+        }
+
+        const keterangan = 
+            typeof body?.keterangan === "string" ? body.keterangan.trim() : "";
+
+        return {
+            data : {nama_transaksi: nama_transaksi.trim(), type, nominal, keterangan}
+        }
+    }
+// ===========E_Validasi data Post dan Put
+
 // ============================================ Post
 route.post('/api/transaksi/',(req, res)=>{
     try {
-        console.log("post data");
-
-        // validasi data
-        var nama_transaksi = req.body?.nama_transaksi;
-        if (typeof nama_transaksi !== "string") {
-            // return res.status(400).json({
-            //         success: false,
-            //         message: 'Gagal menyimpan transaksi nama transaksi salah',
-            //     })
-            return res.status(500).json({
-                    status : "Internal server error",
-                    code : 500,
-                    message : "Data tidak di temukan"
-                })
+        const {error, data} = validasiDataTrx(req.body);
+        if (error) {
+            return res.status(400).json({ status : "Bad Request", code : 400, message:error})
         }
-        nama_transaksi = nama_transaksi.trim(); // menghilangkan karakter space pada value
-        if (nama_transaksi === "") {
-            // return res.status(400).json({
-            //         success: false,
-            //         message: 'Gagal menyimpan transaksi data kosong salah',
-            //     })
-             return res.status(500).json({
-                    status : "Internal server error",
-                    code : 500,
-                    message : "Data tidak di temukan"
-                })
-        }
-        const type = req.body.type;
-        if (type !== 'debit' && type !== 'kredit') {
-            // return res.status(400).json({
-            //         success: false,
-            //         message: 'Gagal menyimpan transaksi type salah',
-            //     })
-             return res.status(500).json({
-                    status : "Internal server error",
-                    code : 500,
-                    message : "Data tidak di temukan"
-                })
-            
-        }
-        const nominal = req.body?.nominal; 
-        // console.log(Number.isInteger(nominal)); // memeriksa apakah suatu nilai merupakan bilangan bulat (integer)
-         
-        if(!Number.isInteger(nominal) || nominal <= 0){
-            // return res.status(400).json({
-            //         success: false,
-            //         message: 'Gagal menyimpan transaksi nominal salah',
-            //     })
-             return res.status(500).json({
-                    status : "Internal server error",
-                    code : 500,
-                    message : "Data tidak di temukan"
-                })
-        };
-
-        const uuid = crypto.randomUUID();
-        const Datapost = {
-            uuid : uuid,
-            user_uuid : req.body?.user_uuid,
-            nama_transaksi : nama_transaksi,
-            type : type,
-            nominal : nominal,
-            keterangan : req.body?.keterangan  ?? '',
-            updated_at : new Date().toISOString().replace('T', ' ').slice(0, 19)
-        }
-        console.log('data yg di post',Datapost);
-        // const data = Object.values(Datapost)
-        // console.log("Hasil pengambilan value object : ",data);
         
-        // const PostData = statementTrx_Post.run(Datapost);
-        const PostData = database.statementTrx_Post.run(Datapost);
-
-        console.log('hasil data Post :',PostData);
-
+        const Datapost = {
+            uuid : crypto.randomUUID(),
+            user_uuid : req.body?.user_uuid ?? null,
+            ...data
+        }
+        database.statementTrx_Post.run(Datapost);
+        // console.log('hasil data Post :',PostData.changes==1);
         res.status(201).json({
             status : "success",
             code : 201,
             data : Datapost,
-            changes : PostData.changes
         });
         
-    } catch (error) {
-        // idPesan.textContent =
-        console.error('ERROR INSERT:', error);
-
-        return res.status(400).json({
-            success: false,
-            message: 'Gagal menyimpan transaksi',
-            error: error.message
-        });
+    } catch (err) {
+        console.error('ERROR POST:', err);
+        res.status(500).json({
+            status : "Internal server error",
+            code : 500,
+            message : "Terjadi kesalahan pada server"
+        })
     }
 })
 
 
+//=====================Put=====================
+route.put('/api/transaksi/:uuid', (req,res)=>{
+    try {
+        const { error, data } = validasiDataTrx(req.body);
+        if (error) {
+            return res.status(400).json({ status: "Bad Request", code: 400, message:error})
+        }
+
+        const dataPut ={ uuid : req.params.uuid, ...data}
+        const hasil = database.updateTrx_uuid.run(dataPut);
+
+        if ( hasil.changes === 0 ){
+            return res.status(404).json({
+                status : "Not Found",
+                code : 404,
+                message :" Data Tidak ada"
+            })
+        }
+        res.status(200).json({
+            status : "succes",
+            code : 200,
+            data: dataPut
+        })
+    } catch (err) {
+        console.error('ERROR INSERT:', err);
+        return res.status(500).json({
+            status : "Internal server error",
+            code : 500,
+            message : "Terjadi kesalahan pada server"
+        });
+    }
+})
+
+// ==================Delete====================
+route.delete('/api/transaksi/:uuid', (req, res)=>{
+    try {
+        const get_uuid = req.params.uuid;
+        const deleteTrx = database.deleteTrx.run(get_uuid);
+        if (deleteTrx.changes === 0) {
+            return res.status(404).json({
+                status : "Not Found",
+                code : 404,
+                message : " Data yang di hapus tidak ada"
+            })   
+        }
+        console.log("data di hapus", deleteTrx.changes);
+        
+        res.status(204).end()
+    } catch (error) {
+        return res.status(400).json({
+                status : "Bad request",
+                code : 404,
+                message : message.error
+            })
+    }
+    
+})
 
 export default route;
