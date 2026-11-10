@@ -146,12 +146,17 @@ const selectUser = db.prepare('SELECT * FROM users');
 const selectTrx = db.prepare('SELECT * FROM transaksi');
 const deleteTrx = db.prepare('DELETE FROM transaksi WHERE uuid = ?');
 const selectTrx_uuid = db.prepare(`SELECT * FROM transaksi WHERE uuid = ?`);
-const updateTrx_uuid = db.prepare(`UPDATE transaksi SET user_uuid = @user_uuid,
-                                                        nama_transaksi = @nama_transaksi ,
+const updateTrx_uuid = db.prepare(`UPDATE transaksi
+                                                    SET nama_transaksi = @nama_transaksi,
                                                         type = @type,
                                                         nominal = @nominal,
-                                                        keterangan= @keterangan
-                                        WHERE uuid = @uuid`);
+                                                        keterangan = @keterangan,
+                                                        updated_at = CURRENT_TIMESTAMP
+                                                    WHERE uuid = @uuid
+                                                    AND (nama_transaksi IS NOT @nama_transaksi
+                                                        OR type IS NOT @type
+                                                        OR nominal IS NOT @nominal
+                                    OR keterangan IS NOT @keterangan)`);
 // console.log('Data transaksi UUID:', selectTrx_uuid.run('660e8400-e29b-41d4-a716-446655440001'));
 
 const statementTrx_Post = db.prepare(`

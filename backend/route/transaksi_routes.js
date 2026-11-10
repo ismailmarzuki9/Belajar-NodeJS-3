@@ -13,6 +13,9 @@ route.get('/api/transaksi/', (req,res)=>{
         const getData = database.selectTrx.all();
         // console.log(getData);
         // const data = JSON.stringify(getData);
+        if (!getData) {
+            
+        }
         res.status(200).json({
             status : "success",
             code : 200,
@@ -131,14 +134,19 @@ route.put('/api/transaksi/:uuid', (req,res)=>{
 
         const dataPut ={ uuid : req.params.uuid, ...data}
         const hasil = database.updateTrx_uuid.run(dataPut);
-
-        if ( hasil.changes === 0 ){
-            return res.status(404).json({
-                status : "Not Found",
-                code : 404,
-                message :" Data Tidak ada"
-            })
+        console.log("hasil update", hasil);
+        
+        if (hasil.changes === 0) {
+            const ada = database.selectTrx_uuid.get(req.params.uuid);
+            if (!ada) {
+                return res.status(404).json({ status: "Not Found", code: 404, message: "Data tidak ada" });
+            }
+            return res.status(409).json({
+                status: "success", code: 409,
+                message: "Tidak ada perubahan data", data: ada
+            });
         }
+
         res.status(200).json({
             status : "succes",
             code : 200,
@@ -170,9 +178,9 @@ route.delete('/api/transaksi/:uuid', (req, res)=>{
         
         res.status(204).end()
     } catch (error) {
-        return res.status(400).json({
+        return res.status(500).json({
                 status : "Bad request",
-                code : 404,
+                code : 500,
                 message : message.error
             })
     }
