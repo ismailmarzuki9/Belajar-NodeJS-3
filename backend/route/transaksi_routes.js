@@ -143,7 +143,8 @@ route.put('/api/transaksi/:uuid', (req,res)=>{
             }
             return res.status(409).json({
                 status: "success", code: 409,
-                message: "Tidak ada perubahan data", data: ada
+                message: "Tidak ada perubahan data", 
+                data: ada
             });
         }
 
