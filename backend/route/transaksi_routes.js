@@ -72,7 +72,7 @@ route.get('/api/transaksi/:uuid', (req,res)=>{
             return { error : " nama_transaksi wajib berupa teks tidak kosong"}
         }
 
-        const type = body?.type.trim();
+        const type = body?.type;
         if (type !== 'debit' && type !== 'kredit') {
             return { error : " type harus 'debit' atau 'kredit' "}
         }
@@ -166,6 +166,8 @@ route.put('/api/transaksi/:uuid', (req,res)=>{
 route.delete('/api/transaksi/:uuid', (req, res)=>{
     try {
         const get_uuid = req.params.uuid;
+        console.log(get_uuid);
+        
         const deleteTrx = database.deleteTrx.run(get_uuid);
         if (deleteTrx.changes === 0) {
             return res.status(404).json({
