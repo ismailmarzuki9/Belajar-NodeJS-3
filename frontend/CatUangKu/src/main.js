@@ -41,7 +41,7 @@ const getData = async ()=>{
 //     }
 
 const tampilkanCatatan =(data)=>{        
-        idDaftar.replaceChildren(); // 
+        idDaftar.replaceChildren(); // f
         const ulBaru = document.createElement("ul");
 
         for (let i = 0; i < data.length; i++) {
@@ -162,7 +162,7 @@ const editCatatan = async (id, judulLama) => {
             return;
         }
         
-        console.log('data', inputValue);
+        console.log('data notes', inputValue);
         const putData = await fetch(`/api/notes/${id}`,{
             method : 'PUT',
             headers : {
@@ -182,3 +182,4 @@ const editCatatan = async (id, judulLama) => {
     }
 }
 
+export default tambahCatatan;
